@@ -69,6 +69,32 @@ class Board extends React.Component {
 		return locations;
 	}
 	
+	advanceTurn() {
+		var locations = this.state.locations;
+		var turn = this.state.turn;
+		locations = this.hideUnguessedVisibleCards(locations);	
+		var matches = this.state.matches;
+		
+		
+		if (this.state.totalMatches === matches) {
+			locations.forEach(function(row) {
+				row.forEach(function(box) {
+					
+					box.visible = true;
+					box.faded = false;
+				
+				});
+			});
+		} else {
+			//do not advance the turn when you have won
+			turn++;
+		}
+		this.setState({
+			locations : locations,
+			guess : 0,
+			turn : turn
+		});
+	}
 	
 	handleClick(row, column) {
 		var locations = this.state.locations;
@@ -77,7 +103,9 @@ class Board extends React.Component {
 		var turn = this.state.turn;
 		var matches = this.state.matches;
 		
+		//you have won
 		if (this.state.totalMatches === matches) {
+			
 			return;
 		}
 		if (location.guessed) {
@@ -86,6 +114,9 @@ class Board extends React.Component {
 		
 		if (guessState === 0 || guessState === 2) {
 			if (guessState === 2) {
+				//if you click again before the timer cleans up the second guess
+				// cancel any events and clean it up now.
+				this.advanceTurnTask && window.clearTimeout(this.advanceTurnTask);
 				locations = this.hideUnguessedVisibleCards(locations);	
 				turn++;
 			}
@@ -132,6 +163,8 @@ class Board extends React.Component {
 				matches : matches
 			});
 			
+			this.advanceTurnTask = window.setTimeout(this.advanceTurn.bind(this), 2000);
+			
 			
 		}		
 	}
@@ -155,6 +188,7 @@ class Board extends React.Component {
 				var number = location.value;
 				row.push(this.renderSquare({
 					guessed : location.guessed,
+					faded : location.faded,
 					value : number, 
 					row : i, 
 					column : j
@@ -169,18 +203,19 @@ class Board extends React.Component {
 		}
 		
 		return (
-		  <div>
+		  <div className="board-container">
 			<div className="title">{title}</div>
 				{winner ? 
-					<div className="winning"><p className="winning-text">Congratulations!</p></div>
-				:
-				<div className="info-container">
-					<div className="instructions">Click a box to see what number it has.</div>
-					<div className="instructions">Try to find the matching boxes.</div>
-				</div>
-				}			
-			{html}
-
+					<div className="winning">Congratulations!</div>
+					:
+					<div className="info-container">
+						<div className="instructions">Click a box to see what number it has.</div>
+						<div className="instructions">Try to find the matching boxes.</div>
+					</div>
+				}	
+			<div className="game-area">				
+				{html}
+			</div>
 			<fieldset>
 				<div className="field-row">
 					<label className="field-label">Turn:</label>
@@ -205,8 +240,14 @@ class Board extends React.Component {
 		
 		locations.forEach(function(row) {
 			row.forEach(function(box) {
-				if (box.visible && !box.guessed) {
-					box.visible = false;
+				if (box.visible) {
+					if (box.guessed) {
+						box.visible = false;
+						box.faded = true;
+					} else {
+						box.visible = false;	
+					}
+					
 				}
 			});
 		});
@@ -224,6 +265,7 @@ class Board extends React.Component {
 						row={props.row} 
 						column={props.column} 
 						guessed={props.guessed} 
+						faded={props.faded} 
 						visible={visible}
 						onClick={() => this.handleClick(row, column)}
 				/>;
