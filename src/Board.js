@@ -12,12 +12,13 @@ class Board extends React.Component {
 		super();
 		
 		var locations = this.buildLocations(game_height, game_width);
-		
+		var totalMatches = (game_height * game_width) / 2;
 		this.state = {
 			locations : locations,
 			matches : 0,
 			guess : 0,
 			turn : 1,
+			totalMatches : totalMatches,
 			firstGuess : null
 		}
 	}
@@ -74,7 +75,12 @@ class Board extends React.Component {
 		var location = Object.assign({}, locations[row-1][column-1]);
 		var guessState = this.state.guess;
 		var turn = this.state.turn;
-
+		var matches = this.state.matches;
+		
+		if (this.state.totalMatches === matches) {
+			return;
+		}
+		
 		if (guessState === 0 || guessState === 2) {
 			if (guessState === 2) {
 				locations = this.hideUnguessedVisibleCards(locations);	
@@ -94,7 +100,7 @@ class Board extends React.Component {
 			var firstGuess = Object.assign({}, this.state.firstGuess);
 			var firstGuessValue = firstGuess.value;
 			var currentGuessValue = location.value;
-			var matches = this.state.matches;
+			
 			if (firstGuess.key === location.key) {
 				return;
 			}
@@ -128,8 +134,15 @@ class Board extends React.Component {
 	}
 	
 	render() {
-		let status;
-		status = 'Welcome to the Matching Game!';
+		
+		const title = 'Matching Game';
+		var matches = this.state.matches;
+		var winner = false;
+		
+		if (this.state.totalMatches === matches) {
+			winner = true;
+		}
+		
 		var html = [];
 		for (var i=1;i<=game_height;i++) {
 			var row = [];
@@ -154,9 +167,15 @@ class Board extends React.Component {
 		
 		return (
 		  <div>
-			<div className="title">{status}</div>
-			<div className="instructions">Click a box to see what number it has.</div>
-			<div className="instructions">Try to find the matching boxes.</div>
+			<div className="title">{title}</div>
+				{winner ? 
+					<div className="winning"><p className="winning-text">Congratulations!</p></div>
+				:
+				<div className="info-container">
+					<div className="instructions">Click a box to see what number it has.</div>
+					<div className="instructions">Try to find the matching boxes.</div>
+				</div>
+				}			
 			{html}
 
 			<fieldset>
@@ -165,7 +184,11 @@ class Board extends React.Component {
 					<div className="field-value" >{this.state.turn}</div>
 				</div>
 				<div className="field-row">
-					<label className="field-label">Guessed Right:</label>
+					<label className="field-label">Total Matches:</label>
+					<div className="field-value" >{this.state.totalMatches}</div>
+				</div>
+				<div className="field-row">
+					<label className="field-label">Matched:</label>
 					<div className="field-value" >{this.state.matches}</div>
 				</div>
 			</fieldset>
@@ -173,7 +196,7 @@ class Board extends React.Component {
 			<div className="nav-bar">
 				<Button onClick={this.startGameOver.bind(this)}>Start Over</Button>
 			</div>
-		
+			
 			
 		  </div>
 		);

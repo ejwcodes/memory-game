@@ -4,8 +4,21 @@
 	margin-bottom: 10px;
 }
 
-.instructions {
+.info-container {
+	height : 40px;
 	margin-bottom: 10px;
+}
+
+.winning {
+	margin-bottom: 10px;
+	font-size: 160%;
+	font-weight : bold;
+	height : 40px;
+	background-color : grey;
+	opacity: 1;
+	width: 240px;
+	border: 1px solid black;
+	padding : 4px;
 }
 
 
