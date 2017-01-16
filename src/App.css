@@ -38,20 +38,42 @@ body {
 }
 
 .square {
-  background: #fff;
-  border: 1px solid #999;
-  float: left;
-  font-size: 24px;
-  font-weight: bold;
-  line-height: 34px;
-  height: 40px;
-  margin-right: -1px;
-  margin-top: -1px;
-  padding: 0;
-  text-align: center;
-  width: 40px;
+	border: 1px solid #000;
+	float: left;
+	font-size: 24px;
+	font-weight: bold;
+	line-height: 34px;
+	height: 40px;
+	margin-right: 2px;
+	margin-top: 2px;
+	padding: 0;
+	text-align: center;
+	width: 40px;
+	box-shadow: 0 2px 4px 0 rgba(0,0,0,0.2);
+    transition: 0.1s;
+	background: #e50000; /*fall back color if repeating-linear-gradient not available*/
+	background: repeating-linear-gradient(
+	  135deg,
+	  #e50000,
+	  #e50000 2px,
+	  #000000 2px,
+	  #000000 4px
+	);
 }
 
+.visible {
+	background : #fff
+}
+
+.square:hover {
+	box-shadow: 0 4px 8px 0 rgba(0,0,0,0.4);
+}
+.square:active {
+	margin-top: 3px;
+	margin-left:1px;
+	height:39px;
+	width:39px;
+}
 .guessed {
 	color : green;
 	border: 3px double green;
@@ -71,7 +93,7 @@ fieldset {
 }
 .field-label {
 	float : left;
-	width : 120px;
+	width : 70px;
 }
 .field-value {
 	float : left;

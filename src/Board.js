@@ -80,6 +80,9 @@ class Board extends React.Component {
 		if (this.state.totalMatches === matches) {
 			return;
 		}
+		if (location.guessed) {
+			return;
+		}
 		
 		if (guessState === 0 || guessState === 2) {
 			if (guessState === 2) {
@@ -184,12 +187,8 @@ class Board extends React.Component {
 					<div className="field-value" >{this.state.turn}</div>
 				</div>
 				<div className="field-row">
-					<label className="field-label">Total Matches:</label>
-					<div className="field-value" >{this.state.totalMatches}</div>
-				</div>
-				<div className="field-row">
-					<label className="field-label">Matched:</label>
-					<div className="field-value" >{this.state.matches}</div>
+					<label className="field-label">Matches:</label>
+					<div className="field-value" >{this.state.matches}/{this.state.totalMatches}</div>
 				</div>
 			</fieldset>
 			

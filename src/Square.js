@@ -5,6 +5,9 @@ function Square(props) {
 	if (props.guessed) {
 		className +=  ' guessed';
 	}
+	if (props.visible) {
+		className += ' visible';
+	}
 	return (
 	  <button 	className={className} 
 				onClick={props.onClick.bind(this)}>
