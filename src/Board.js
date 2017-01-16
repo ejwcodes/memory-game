@@ -166,7 +166,7 @@ class Board extends React.Component {
 				matches : matches
 			});
 			
-			this.advanceTurnTask = window.setTimeout(this.advanceTurn.bind(this), 1000);
+			this.advanceTurnTask = window.setTimeout(this.advanceTurn.bind(this), 700);
 			
 			
 		}		
