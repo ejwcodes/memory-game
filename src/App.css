@@ -1,26 +1,11 @@
-.App {
-  text-align: center;
+.title {
+	font-size: 200%;
+	font-weight: bold;
+	margin-bottom: 10px;
 }
 
-.App-logo {
-  animation: App-logo-spin infinite 20s linear;
-  height: 80px;
-}
-
-.App-header {
-  background-color: #222;
-  height: 150px;
-  padding: 20px;
-  color: white;
-}
-
-.App-intro {
-  font-size: large;
-}
-
-@keyframes App-logo-spin {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
+.instructions {
+	margin-bottom: 10px;
 }
 
 
@@ -29,18 +14,14 @@ body {
   margin: 20px;
 }
 
-ol, ul {
-  padding-left: 30px;
-}
-
 .board-row:after {
   clear: both;
   content: "";
   display: table;
 }
 
-.status {
-  margin-bottom: 10px;
+.nav-bar {
+	margin-top: 8px; 
 }
 
 .square {
@@ -50,27 +31,36 @@ ol, ul {
   font-size: 24px;
   font-weight: bold;
   line-height: 34px;
-  height: 34px;
+  height: 40px;
   margin-right: -1px;
   margin-top: -1px;
   padding: 0;
   text-align: center;
-  width: 34px;
+  width: 40px;
+}
+
+.guessed {
+	color : green;
+	border: 3px double green;
 }
 
 .square:focus {
   outline: none;
 }
 
-.kbd-navigation .square:focus {
-  background: #ddd;
+fieldset {
+	clear : both;
+	padding : 5px;
 }
 
-.game {
-  display: flex;
-  flex-direction: row;
+.field-row {
+	clear : both;
 }
-
-.game-info {
-  margin-left: 20px;
+.field-label {
+	float : left;
+	width : 120px;
+}
+.field-value {
+	float : left;
+	width : 200px;
 }

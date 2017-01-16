@@ -1,101 +1,225 @@
 import React from 'react';
 import Square from './Square.js';
+import { Button } from 'react-bootstrap';
 
+const game_height = 4;
+const game_width = 6;
+	
 class Board extends React.Component {
+	
+	
 	constructor() {
 		super();
-		this.state = {
-			xIsNext : true,
-			squares: Array(9).fill(null)
-		}
-	}
-	handleClick(i) {
 		
-		const squares = this.state.squares.slice();
-		const winner = calculateWinner(squares);
-		//if someone won or if a square has a value, return 
-		if (winner || squares[i]) {
-			return;
+		var locations = this.buildLocations(game_height, game_width);
+		
+		this.state = {
+			locations : locations,
+			matches : 0,
+			guess : 0,
+			turn : 1,
+			firstGuess : null
 		}
-		let xIsNext = this.state.xIsNext;
-		squares[i] = xIsNext ? 'X' : 'O';
-		this.setState({
-			squares: squares,
-			xIsNext : !this.state.xIsNext
-		});
 	}
 	
-	renderSquare(i) {
-		return <Square value={this.state.squares[i]} 
-						onClick={() => this.handleClick(i)}/>;
+	// returns a matrix of locations
+	// size based on the input height and width
+	// each location is a config object used for its state
+	//   value, row, column, visible, guessed
+	
+	//guessed means the card pair has been located
+	// not to be confused with being 'guessed' during a turn, 
+	// where the cards will be 'visible' though guessed would be
+	// false
+	buildLocations(game_height, game_width) {
+		//create an array of the values used in the game
+		// 
+		var matchOptions = [];
+		for (var x=1;x<13;x++) {
+			matchOptions.push(x);
+			matchOptions.push(x);
+		}
+		
+		var locations = [];
+		for (var i=1;i<=game_height;i++) {
+			var row = [];
+			
+			for (var j=1;j<=game_width;j++) {
+				//make each square by picking a number with Math.Random and 
+				// removing that item from the options array
+				var numberIndex = Math.floor(Math.random() * matchOptions.length)
+				var number = matchOptions[numberIndex];
+				matchOptions.splice(numberIndex, 1);
+				
+				row.push({
+					value : number,
+					row : i,
+					column : j,
+					key : '' + i + j,
+					visible : false,
+					guessed : false
+				});
+				
+			}
+			locations.push(row);
+			
+		}
+		
+		return locations;
 	}
 	
-	startGameOver() {
-		this.setState({
-			squares: Array(9).fill(null)
-		});
+	
+	handleClick(row, column) {
+		var locations = this.state.locations;
+		var location = Object.assign({}, locations[row-1][column-1]);
+		var guessState = this.state.guess;
+		var turn = this.state.turn;
+
+		if (guessState === 0 || guessState === 2) {
+			if (guessState === 2) {
+				locations = this.hideUnguessedVisibleCards(locations);	
+				turn++;
+			}
+			
+			location.visible = true;
+			location.firstGuess = true;
+			locations[row-1][column-1] = location;
+			this.setState({
+				locations : locations,
+				guess : 1,
+				firstGuess : location,
+				turn : turn
+			});
+		} else if (guessState === 1) {
+			var firstGuess = Object.assign({}, this.state.firstGuess);
+			var firstGuessValue = firstGuess.value;
+			var currentGuessValue = location.value;
+			var matches = this.state.matches;
+			if (firstGuess.key === location.key) {
+				return;
+			}
+			
+			location.visible = true;
+			
+			if (firstGuessValue === currentGuessValue) {
+				location.guessed = true;
+				firstGuess.guessed = true;
+				matches++;
+			}
+			
+			//update current guess location
+			locations[row-1][column-1] = location;
+			
+			var firstRowIndex = firstGuess.row-1;
+			var firstColumnIndex = firstGuess.column-1;
+			locations[firstRowIndex][firstColumnIndex] = firstGuess;
+			
+			//guess is 2 now to leave both visible, 
+			//one more click to go to next guess
+			this.setState({
+				locations : locations,
+				guess : 2,
+				firstGuess : null,
+				matches : matches
+			});
+			
+			
+		}		
 	}
 	
 	render() {
-		const squares = this.state.squares.slice();
-		const winner = calculateWinner(squares);
 		let status;
-		if (winner) {
-			status = 'Winner: ' + winner;
+		status = 'Welcome to the Matching Game!';
+		var html = [];
+		for (var i=1;i<=game_height;i++) {
+			var row = [];
 			
-		} else {
-			status = 'Next player: ';
-			if (this.state.xIsNext) {
-				status += 'X';
-			} else {
-				status += 'O';
+			for (var j=1;j<=game_width;j++) {
+				var location = this.state.locations[i-1][j-1];
+				var number = location.value;
+				row.push(this.renderSquare({
+					guessed : location.guessed,
+					value : number, 
+					row : i, 
+					column : j
+				}));
+				
 			}
+			html.push(React.createElement('div', {
+				key : 'row-' + i,
+				className : 'board-row' 
+			}, row));
+			
 		}
-		
 		
 		return (
 		  <div>
-			<div className="status">{status}</div>
-			<div className="board-row">
-			  {this.renderSquare(0)}
-			  {this.renderSquare(1)}
-			  {this.renderSquare(2)}
+			<div className="title">{status}</div>
+			<div className="instructions">Click a box to see what number it has.</div>
+			<div className="instructions">Try to find the matching boxes.</div>
+			{html}
+
+			<fieldset>
+				<div className="field-row">
+					<label className="field-label">Turn:</label>
+					<div className="field-value" >{this.state.turn}</div>
+				</div>
+				<div className="field-row">
+					<label className="field-label">Guessed Right:</label>
+					<div className="field-value" >{this.state.matches}</div>
+				</div>
+			</fieldset>
+			
+			<div className="nav-bar">
+				<Button onClick={this.startGameOver.bind(this)}>Start Over</Button>
 			</div>
-			<div className="board-row">
-			  {this.renderSquare(3)}
-			  {this.renderSquare(4)}
-			  {this.renderSquare(5)}
-			</div>
-			<div className="board-row">
-			  {this.renderSquare(6)}
-			  {this.renderSquare(7)}
-			  {this.renderSquare(8)}
-			</div>
-			<button hidden={!winner} 
-				onClick={this.startGameOver.bind(this)}>Start Over</button>
+		
+			
 		  </div>
 		);
 	}
+	
+	hideUnguessedVisibleCards(locations) {
+		
+		locations.forEach(function(row) {
+			row.forEach(function(box) {
+				if (box.visible && !box.guessed) {
+					box.visible = false;
+				}
+			});
+		});
+		
+		return locations;
+	}
+		
+	renderSquare(props) {
+		var row = props.row;
+		var column = props.column;
+		var visible = this.state.locations[row-1][column-1].visible;
+		
+		return <Square 	key={'' + props.row + props.column} 
+						value={props.value}
+						row={props.row} 
+						column={props.column} 
+						guessed={props.guessed} 
+						visible={visible}
+						onClick={() => this.handleClick(row, column)}
+				/>;
+	}
+	
+	startGameOver() {
+		var locations = this.buildLocations(game_height, game_width);
+		
+		this.setState({
+			locations : locations,
+			matches : 0,
+			guess : 0,
+			turn : 1
+		});
+	}
 }
 
-function calculateWinner(squares) {
-  const lines = [
-    [0, 1, 2],
-    [3, 4, 5],
-    [6, 7, 8],
-    [0, 3, 6],
-    [1, 4, 7],
-    [2, 5, 8],
-    [0, 4, 8],
-    [2, 4, 6],
-  ];
-  for (let i = 0; i < lines.length; i++) {
-    const [a, b, c] = lines[i];
-    if (squares[a] && squares[a] === squares[b] && squares[a] === squares[c]) {
-      return squares[a];
-    }
-  }
-  return null;
-}
+
+
 
 export default Board;
