@@ -17,7 +17,7 @@ class Board extends React.Component {
 			locations : locations,
 			matches : 0,
 			guess : 0,
-			turn : 1,
+			turn : 0,
 			totalMatches : totalMatches,
 			firstGuess : null
 		}
@@ -87,10 +87,8 @@ class Board extends React.Component {
 				
 				});
 			});
-		} else {
-			//do not advance the turn when you have won
-			turn++;
 		}
+		turn++;
 		this.setState({
 			locations : locations,
 			guess : 0,
@@ -221,7 +219,7 @@ class Board extends React.Component {
 			</div>
 			<fieldset>
 				<div className="field-row">
-					<label className="field-label">Turn:</label>
+					<label className="field-label">Turns:</label>
 					<div className="field-value" >{this.state.turn}</div>
 				</div>
 				<div className="field-row">
