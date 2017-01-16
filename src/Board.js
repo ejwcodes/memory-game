@@ -212,8 +212,8 @@ class Board extends React.Component {
 					<div className="winning">Congratulations!</div>
 					:
 					<div className="info-container">
-						<div className="instructions">Click a box to see what number it has</div>
-						<div className="instructions">Try to find the matching boxes</div>
+						<div className="instructions">Click a card to flip it over</div>
+						<div className="instructions">Find cards with matching numbers</div>
 					</div>
 				}	
 			<div className="game-area">				
