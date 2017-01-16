@@ -230,7 +230,9 @@ class Board extends React.Component {
 			<div className="nav-bar">
 				<Button onClick={this.startGameOver.bind(this)}>Start Over</Button>
 			</div>
-			
+			<div className="footer">
+				<a href="https://github.com/hacocacyb/memory-game">View source on GitHub</a>
+			</div>
 			
 		  </div>
 		);

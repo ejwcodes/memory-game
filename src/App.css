@@ -3,6 +3,10 @@ body {
   
 }
 
+.footer {
+	text-align: center;
+	margin: 8px auto;
+}
 #root {
 	min-width: 300px;
 }
