@@ -281,7 +281,7 @@ class Board extends React.Component {
 			locations : locations,
 			matches : 0,
 			guess : 0,
-			turn : 1
+			turn : 0
 		});
 	}
 }
