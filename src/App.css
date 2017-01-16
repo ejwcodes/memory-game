@@ -1,6 +1,5 @@
 body {
-  font: 14px "Century Gothic", Futura, sans-serif;
-  
+	font: 14px "Century Gothic", Futura, sans-serif;
 }
 
 .footer {
@@ -12,7 +11,6 @@ body {
 }
 .game {
 	width: 300px;
-	
 	padding: 10px;
 	margin: 0 auto;
 	text-align: center;
@@ -49,9 +47,9 @@ body {
 	text-align: center;
 }
 .board-row:after {
-  clear: both;
-  content: "";
-  display: table;
+	clear: both;
+	content: "";
+	display: table;
 }
 
 .nav-bar {
@@ -66,21 +64,60 @@ body {
 .card-container {
 	display: inline-block;  
 }
+
+.square, .face, .back {
+	width: 40px;
+	height : 40px;
+}
 .square {
-	border: 1px solid #000;
-	display: inline-block;
+	display : inline-block;
+	position: relative;
+	margin: 1px;
+	width: 40px;
+	box-shadow: 0 2px 4px 0 rgba(0,0,0,0.2);
+    transition: 0.2s;
+	perspective: 800px;
+}
+
+.card{
+	text-align:center;
+	position: absolute;
+	width: 100%;
+	height: 100%;
+	transform-style: preserve-3d;
+	transition: 0.5s;
+	transform: rotateY(0deg);
+}
+
+.card.flipped{
+	transform: rotateY(180deg);
+}
+
+.face {
+	border-radius: 4px;
+	position: absolute;
+	width: 100%;
+	height: 100%;
+	left: 0;
+	top: 0;
 	font-size: 24px;
 	vertical-align: top;
 	font-weight: bold;
 	line-height: 34px;
 	height: 40px;
-	margin: 1px 1px 1px 1px;
+	transform-style: preserve-3d;
+	transition: 0.5s;
 	padding: 0;
+	border: 1px solid #000;
 	text-align: center;
-	width: 40px;
-	box-shadow: 0 2px 4px 0 rgba(0,0,0,0.2);
-    transition: 0.2s;
+}
+.face.front{
+	background:#fff;
+	transform: rotateY(180deg);
+}
+.face.back {
 	background: #e50000; /*fall back color if repeating-linear-gradient not available*/
+	backface-visibility: hidden;
 	background: repeating-linear-gradient(
 	  135deg,
 	  #e50000,
@@ -93,14 +130,15 @@ body {
 .visible {
 	background : #fff
 }
-.guessed {
-	color : green;
-	border: 3px double green;
-}
+
 .faded {
 	visibility: hidden;
 	background: none;
 	border : none;
+}
+
+.guessed .face.front {
+	border: 3px double green;
 }
 .square:hover {
 	box-shadow: 0 4px 8px 0 rgba(0,0,0,0.4);
@@ -108,11 +146,6 @@ body {
 .square:active {
 	box-shadow: 0 2px 4px 0 rgba(0,0,0,0.2);
 }
-
-.square:focus {
-  outline: none;
-}
-
 
 fieldset {
 	clear : both;

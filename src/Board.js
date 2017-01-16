@@ -69,10 +69,12 @@ class Board extends React.Component {
 		return locations;
 	}
 	
+	//this gets called after a turn is guessed so that the user
+	// sees the results of their guess for a little bit.
 	advanceTurn() {
 		var locations = this.state.locations;
 		var turn = this.state.turn;
-		locations = this.hideUnguessedVisibleCards(locations);	
+		locations = this.endturnCleanup(locations);	
 		var matches = this.state.matches;
 		
 		
@@ -103,11 +105,12 @@ class Board extends React.Component {
 		var turn = this.state.turn;
 		var matches = this.state.matches;
 		
-		//you have won
+		//you have already won so exit here
 		if (this.state.totalMatches === matches) {
-			
 			return;
 		}
+		//on first or second guess ignore the locations
+		// already guessed
 		if (location.guessed) {
 			return;
 		}
@@ -117,7 +120,7 @@ class Board extends React.Component {
 				//if you click again before the timer cleans up the second guess
 				// cancel any events and clean it up now.
 				this.advanceTurnTask && window.clearTimeout(this.advanceTurnTask);
-				locations = this.hideUnguessedVisibleCards(locations);	
+				locations = this.endturnCleanup(locations);	
 				turn++;
 			}
 			
@@ -163,7 +166,7 @@ class Board extends React.Component {
 				matches : matches
 			});
 			
-			this.advanceTurnTask = window.setTimeout(this.advanceTurn.bind(this), 2000);
+			this.advanceTurnTask = window.setTimeout(this.advanceTurn.bind(this), 1000);
 			
 			
 		}		
@@ -209,8 +212,8 @@ class Board extends React.Component {
 					<div className="winning">Congratulations!</div>
 					:
 					<div className="info-container">
-						<div className="instructions">Click a box to see what number it has.</div>
-						<div className="instructions">Try to find the matching boxes.</div>
+						<div className="instructions">Click a box to see what number it has</div>
+						<div className="instructions">Try to find the matching boxes</div>
 					</div>
 				}	
 			<div className="game-area">				
@@ -238,7 +241,7 @@ class Board extends React.Component {
 		);
 	}
 	
-	hideUnguessedVisibleCards(locations) {
+	endturnCleanup(locations) {
 		
 		locations.forEach(function(row) {
 			row.forEach(function(box) {
@@ -275,7 +278,7 @@ class Board extends React.Component {
 	
 	startGameOver() {
 		var locations = this.buildLocations(game_height, game_width);
-		
+		this.advanceTurnTask && window.clearTimeout(this.advanceTurnTask);
 		this.setState({
 			locations : locations,
 			matches : 0,
