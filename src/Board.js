@@ -218,14 +218,11 @@ class Board extends React.Component {
 				{html}
 			</div>
 			<fieldset>
-				<div className="field-row">
 					<label className="field-label">Turns:</label>
 					<div className="field-value" >{this.state.turn}</div>
-				</div>
-				<div className="field-row">
+
 					<label className="field-label">Matches:</label>
 					<div className="field-value" >{this.state.matches}/{this.state.totalMatches}</div>
-				</div>
 			</fieldset>
 			
 			<div className="nav-bar">
