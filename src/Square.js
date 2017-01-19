@@ -25,7 +25,7 @@ function Square(props) {
 				</button>
 				<button className="face back"
 					onClick={props.onClick.bind(this)}>
-					
+						
 				</button>
 			</div>
 		</div>

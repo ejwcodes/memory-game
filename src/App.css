@@ -31,11 +31,9 @@ body {
 	text-align: center;
 }
 
-.nav-bar {
-	margin-top: 8px; 
-	text-align: center;
+.nav-bar  button {
+	margin : 4px;
 }
-
 .game-area {
 	text-align: center;
 }
@@ -123,4 +121,7 @@ fieldset {
 fieldset .field-label, fieldset .field-value {
 	padding : 2px;
 	display: inline-block;
+}
+.form-group {
+	margin-top: 4px;
 }

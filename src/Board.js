@@ -14,6 +14,14 @@ class Board extends React.Component {
 		var locations = this.buildLocations(game_height, game_width);
 		var totalMatches = (game_height * game_width) / 2;
 		this.state = {
+			mode : 'GAME',
+			rows : game_height,
+			columns : game_width,
+			settings : {
+				rows : game_height,
+				columns : game_width,
+				difficult : 'EASY'
+			},
 			locations : locations,
 			matches : 0,
 			guess : 0,
@@ -32,20 +40,20 @@ class Board extends React.Component {
 	// not to be confused with being 'guessed' during a turn, 
 	// where the cards will be 'visible' though guessed would be
 	// false
-	buildLocations(game_height, game_width) {
+	buildLocations(rows, columns) {
 		//create an array of the values used in the game
 		// 
 		var matchOptions = [];
-		for (var x=1;x<13;x++) {
+		for (var x=1;x<=(Math.ceil(rows*columns/2));x++) {
 			matchOptions.push(x);
 			matchOptions.push(x);
 		}
 		
 		var locations = [];
-		for (var i=1;i<=game_height;i++) {
+		for (var i=1;i<=rows;i++) {
 			var row = [];
 			
-			for (var j=1;j<=game_width;j++) {
+			for (var j=1;j<=columns;j++) {
 				//make each square by picking a number with Math.Random and 
 				// removing that item from the options array
 				var numberIndex = Math.floor(Math.random() * matchOptions.length)
@@ -175,16 +183,18 @@ class Board extends React.Component {
 		const title = 'Matching Game';
 		var matches = this.state.matches;
 		var winner = false;
+		var rows = this.state.rows;
+		var columns = this.state.columns;
 		
 		if (this.state.totalMatches === matches) {
 			winner = true;
 		}
 		
 		var html = [];
-		for (var i=1;i<=game_height;i++) {
+		for (var i=1;i<=rows;i++) {
 			var row = [];
 			
-			for (var j=1;j<=game_width;j++) {
+			for (var j=1;j<=columns;j++) {
 				var location = this.state.locations[i-1][j-1];
 				var number = location.value;
 				row.push(this.renderSquare({
@@ -202,40 +212,114 @@ class Board extends React.Component {
 			}, row));
 			
 		}
-		
-		return (
-		  <div className="board-container">
-			<div className="title">{title}</div>
-				{winner ? 
-					<div className="winning">Congratulations!</div>
-					:
-					<div className="info-container">
-						<div className="instructions">Click a card to flip it over</div>
-						<div className="instructions">Find cards with matching numbers</div>
-					</div>
-				}	
-			<div className="game-area">				
-				{html}
-			</div>
-			<fieldset>
-					<label className="field-label">Turns:</label>
-					<div className="field-value" >{this.state.turn}</div>
+		if (this.state.mode =='GAME') {
+			return (
+			  <div className="board-container">
+				<div className="title">{title}</div>
+					{winner ? 
+						<div className="winning">Congratulations!</div>
+						:
+						<div className="info-container">
+							<div className="instructions">Click a card to flip it over</div>
+							<div className="instructions">Find cards with matching numbers</div>
+						</div>
+					}	
+				<div className="game-area">				
+					{html}
+				</div>
+				<fieldset>
+						<label className="field-label">Turns:</label>
+						<div className="field-value" >{this.state.turn}</div>
 
-					<label className="field-label">Matches:</label>
-					<div className="field-value" >{this.state.matches}/{this.state.totalMatches}</div>
-			</fieldset>
-			
-			<div className="nav-bar">
-				<Button onClick={this.startGameOver.bind(this)}>Start Over</Button>
-			</div>
-			<div className="footer">
-				<a href="https://github.com/hacocacyb/memory-game">View source on GitHub</a>
-			</div>
-			
-		  </div>
-		);
+						<label className="field-label">Matches:</label>
+						<div className="field-value" >{this.state.matches}/{this.state.totalMatches}</div>
+				</fieldset>
+				
+				<div className="text-center nav-bar">
+					<Button onClick={this.startGameOver.bind(this)}>Start Over</Button>
+					<Button onClick={this.showSettings.bind(this)}>Settings</Button>
+				</div>
+				<div className="footer">
+					<a href="https://github.com/hacocacyb/memory-game">View source on GitHub</a>
+				</div>
+				
+			  </div>
+			 );
+		} else {
+			var numberOfSquares = this.state.settings.rows * this.state.settings.columns;
+			var numbersUsed = Math.ceil(numberOfSquares / 2);
+			var oddAmountOfSquares = (numberOfSquares % 2 === 1);
+			return (
+				<div className="container">
+					<div className="title">{title}</div>
+					<div className="info-container">
+						<div className="instructions">Settings</div>
+						
+					</div>
+					<form className="form">
+						<div className="form-group">
+							<label  htmlFor="rows">Rows:</label>
+							<input  type="number"
+									id="rows" 
+									min="2" 
+									pattern="\d*"
+									className="form-control col-xs-8"
+									defaultValue={this.state.settings.rows}
+									onChange={this.handleSettingsChange.bind(this)}
+									/>
+						</div>
+						<div className="form-group">
+							<label htmlFor="columns">Columns:</label>
+							<input 	type="number" 
+									id="columns" 
+									min="2" 
+									pattern="\d*"
+									className="form-control col-xs-8"
+									defaultValue={this.state.settings.columns}
+									onChange={this.handleSettingsChange.bind(this)}/>
+						</div>
+						<div className="form-group">
+							<label htmlFor="difficult">Number Difficulty:</label>
+							<div>
+								<label className="radio-inline">
+									<input value="EASY" 
+											type="radio" 
+											
+											name="difficult"
+											checked={this.state.settings.difficult==='EASY'}
+											onChange={this.handleSettingsChange.bind(this)}/>
+											1 - {numbersUsed}
+								</label>
+								<label className="radio-inline">
+									<input value="HARD" 
+											type="radio" 
+											name="difficult" 
+											checked={this.state.settings.difficult==='HARD'}
+											onChange={this.handleSettingsChange.bind(this)}/>
+											1 - 999
+								</label>
+							</div>
+						</div>
+					</form>
+					
+					<div className="panel panel-default" style={{
+							display : oddAmountOfSquares ? 'block' : 'none'
+					}}>
+						<div className="panel-body">Games with an odd number of cards will have one unmatched card</div>
+					</div>
+					<div className="text-center nav-bar">
+						<Button onClick={this.cancelSettings.bind(this)}>Cancel</Button>
+						<Button onClick={this.startGameFromSettings.bind(this)}>New Game</Button>
+					</div>
+					<div className="footer">
+						<a href="https://github.com/hacocacyb/memory-game">View source on GitHub</a>
+					</div>
+				</div>
+			)
+		}
+			 
 	}
-	
+
 	endturnCleanup(locations) {
 		
 		locations.forEach(function(row) {
@@ -269,6 +353,62 @@ class Board extends React.Component {
 						visible={visible}
 						onClick={() => this.handleClick(row, column)}
 				/>;
+	}
+	
+		
+	handleSettingsChange(e) {
+		var val = e.currentTarget.value;
+		var stateName = e.currentTarget.id || e.currentTarget.name;
+		var stateSettings = Object.assign({}, this.state.settings);
+		
+		stateSettings[stateName] = val;
+		console.log(stateSettings);
+		this.setState({
+			settings : stateSettings
+		});
+	}
+	
+	cancelSettings() {
+		this.setState({
+			mode : 'GAME',
+			settings : {
+				rows : this.state.rows,
+				columns : this.state.columns,
+				difficult : 'EASY'
+			},
+		});
+	}
+	
+	showSettings() {
+		
+		this.setState({
+			settings : {
+				rows : this.state.rows,
+				columns : this.state.columns,
+				difficult : 'EASY'
+			},
+			mode : 'SETTINGS'
+		});
+	}
+	
+	startGameFromSettings() {
+		var newColumns = this.state.settings.columns;
+		var newRows = this.state.settings.rows;
+		var locations = this.buildLocations(newRows, newColumns);
+		this.advanceTurnTask && window.clearTimeout(this.advanceTurnTask);
+		
+		var totalMatches = Math.floor(newRows * newColumns / 2);
+		
+		this.setState({
+			mode : 'GAME',
+			locations : locations,
+			matches : 0,
+			guess : 0,
+			turn : 0,
+			rows : newRows,
+			columns : newColumns,
+			totalMatches : totalMatches
+		});
 	}
 	
 	startGameOver() {
