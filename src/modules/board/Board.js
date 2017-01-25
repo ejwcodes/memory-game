@@ -153,8 +153,7 @@ class Board extends React.Component {
 			let firstColumnIndex = firstGuess.column-1;
 			locations[firstRowIndex][firstColumnIndex] = firstGuess;
 
-			//guess is 2 now to leave both visible,
-			//one more click to go to next guess
+			//after second guess, the timer or another click will turn the cards over
 			this.setState({
 				locations : locations,
 				guess : 2,

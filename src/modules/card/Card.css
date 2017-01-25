@@ -9,7 +9,6 @@
 	margin: 1px;
 	width: 40px;
 	box-shadow: 0 2px 4px 0 rgba(0,0,0,0.2);
-    transition: 0.2s;
 	perspective: 800px;
 }
 
@@ -19,7 +18,7 @@
 	width: 100%;
 	height: 100%;
 	transform-style: preserve-3d;
-	transition: 0.5s;
+	transition : 0.4s;
 	transform: rotateY(0deg);
 }
 
@@ -46,6 +45,7 @@
 }
 .face.front{
 	background:#fff;
+	backface-visibility: hidden;
 	transform: rotateY(180deg);
 }
 .face.back {
