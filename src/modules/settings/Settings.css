@@ -1,0 +1,19 @@
+.settings-form {
+	text-align: center;
+}
+.form-group {
+	margin-top: 4px;
+}
+.settings-form label {
+	display: inline-block;
+	text-align: left;
+	width: 80px;
+}
+.settings-form input {
+	width: 70px;
+}
+.warning-box {
+	padding: 4px;
+	width: 260px;
+	margin: 0 auto;
+}

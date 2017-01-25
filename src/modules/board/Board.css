@@ -1,0 +1,26 @@
+.info-container {
+	height : 40px;
+	text-align: center;
+	display: block;
+}
+.info-container.has-won {
+	display: none;
+}
+
+.game-status .field-label, .game-status .field-value {
+	padding : 2px;
+	display: inline-block;
+}
+
+
+.winner {
+	display: none;
+	font-size: 160%;
+	font-weight : bold;
+	height : 40px;
+	text-align: center;
+}
+
+.winner.has-won {
+	display: block;
+}
