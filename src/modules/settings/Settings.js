@@ -1,43 +1,47 @@
 import React from 'react'
+import { connect } from 'react-redux'
+import { hashHistory } from 'react-router'
+import * as Actions from '../../actions/gameStateActions.js'
 
 import './Settings.css'
 
 class Settings extends React.Component {
 
   constructor(props) {
-    super();
-    var rows = 4, columns = 6;
-		rows = props.params.rows || rows;
-		columns = props.params.columns || columns;
+    super(props);
+    let rows = props.rows;
+		let columns = props.columns;
 
     this.state = {
-      initialRows : rows,
-      initialColumns : columns,
       rows : rows,
       columns : columns
     }
 
   }
   componentWillReceiveProps(props) {
-    var rows = 4, columns = 6;
-		rows = props.params.rows || rows;
-		columns = props.params.columns || columns;
+    let rows = props.rows;
+		let columns = props.columns;
 
-	   this.setState({
-       rows : rows,
-       columns : columns
-     });
-
+    this.setState({
+      rows : rows,
+      columns : columns
+    });
 	}
 
   cancelSettings() {
-    this.props.route.cancelSettings(this.state.initialRows, this.state.initialColumns);
+    hashHistory.push('/game')
   }
 
 	startGameFromSettings() {
-		var newColumns = this.state.columns;
-		var newRows = this.state.rows;
-    this.props.route.newGame(newRows, newColumns);
+		var columns = this.state.columns;
+		var rows = this.state.rows;
+    //this.props.route.newGame(newRows, newColumns);
+    this.props.dispatch(Actions.newGame({
+      columns : columns,
+      rows : rows
+    }));
+
+    hashHistory.push('/game')
 	}
 
   handleSettingsChange(e) {
@@ -53,7 +57,7 @@ class Settings extends React.Component {
     var numberOfSquares = this.state.rows * this.state.columns;
     var oddAmountOfSquares = (numberOfSquares % 2 === 1);
     var showOddWarning = {
-        visibility : oddAmountOfSquares ? null : 'hidden'
+      visibility : oddAmountOfSquares ? null : 'hidden'
     };
 
     return (
@@ -94,4 +98,7 @@ class Settings extends React.Component {
   }
 }
 
-export default Settings;
+export default connect((store) => {
+	console.log(store);
+	return {...store.gameState}
+})(Settings);
